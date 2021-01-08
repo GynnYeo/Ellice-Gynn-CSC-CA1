@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "S3Bucket";
+}
+
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<p>Use this area to browse image and upload to S3 bucket.</p>
+@using (Html.BeginForm("S3Bucket", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div>
+        @Html.TextBox("file", "", new { type = "file" }) <br />
+        <input type="submit" value="Upload" />
+        @ViewBag.Message
+
+
+
+
+    </div>
+}
+
+<h3>List of items in the bucket</h3>
+
+<form>
+    @foreach (var data in ViewBag.File)
+    {
+        @*<li> @data</li>*@
+
+        @*@Html.RadioButton("bucketItem", data) @data<br />*@
+
+        <input type="radio" asp-for="bucketItem" name="bucketItem" id ="@data" onClick="setText('@data');"  value="@data" />
+        @data
+        <br />
+
+
+    }
+</form>
+
+
+
+
+
+<h3>Bitly Shorten URL</h3>
+
+
+<form>
+
+    <div class="d-grid gap-2 d-md-block">
+        <h5>Enter long URL</h5>
+        <input type="text" id="longURL" size="15" />
+        <button class="btn btn-primary" type="button" onclick="bitlyShortenUrl();">ShortenURL</button>
+    </div>
+    </br>
+    <div class="form-group mt-3">
+        <label for="shortURL">ID:</label>
+        <input type="text" id="shortURL" disabled>
+    </div>
+
+</form>
+
+
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+    function setText(target) {
+        var radiobtn = document.getElementById(target);
+        
+        var file = radiobtn.value;
+        console.log(file);
+
+        var url = "https://gynnyeo-ellicetan-csc-task5-awsbucket.s3.amazonaws.com/"
+        $("#longURL").val(url+ file);
+
+    }
+</script>
+
+<script>
+
+
+
+    function bitlyShortenUrl() {
+
+        var longurl = $('#longURL').val();
+        var authorizationToken = "YOUR_AUTHORUSATION_TOKEN";
+
+
+        var bitlylongurl = JSON.stringify({ long_url: longurl });
+
+        $.ajax({
+            type: "POST",
+            headers: {
+                'Authorization': 'Bearer ' + authorizationToken,
+                'Content-Type': 'application/json'
+            },
+            url: "https://api-ssl.bitly.com/v4/shorten",
+            data: bitlylongurl,
+            success: function (data) {
+                console.log(data);
+                console.log(data.id);
+                document.getElementById("shortURL").value = data.id;
+
+            }
+        });
+
+    }
+
+
+
+</script>
+

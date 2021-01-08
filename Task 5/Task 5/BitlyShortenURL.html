@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>Bitly Shorten URL</title>
+</head>
+<body>
+
+    <h1>Bitly Shorten URL</h1>
+
+
+    <form>
+
+        <div class="d-grid gap-2 d-md-block">
+            <h5>Enter long URL</h5>
+            <input type="text" id="longURL" size="15" />
+            <button class="btn btn-primary" type="button" onclick="bitlyShortenUrl();">ShortenURL</button>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="shortURL">ID:</label>
+            <input type="text" id="shortURL" disabled>
+        </div>
+
+    </form>
+
+
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+
+
+        function bitlyShortenUrl() {
+
+            var longurl = $('#longURL').val();
+            var authorizationToken = "YOUR_AUTHORUSATION_TOKEN";
+
+
+            var bitlylongurl = JSON.stringify({ long_url : longurl });
+
+            $.ajax({
+                type: "POST",
+                headers: {
+                    'Authorization': 'Bearer ' + authorizationToken,
+                    'Content-Type': 'application/json'
+                },
+                url: "https://api-ssl.bitly.com/v4/shorten",
+                data: bitlylongurl,
+                success: function (data) {
+                    console.log(data);
+                    console.log(data.id);
+                    document.getElementById("shortURL").value = data.id;
+
+                }
+            });
+
+        }
+
+
+
+    </script>
+
+</body>
+
+
+</html>
